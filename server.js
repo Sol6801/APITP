@@ -1,7 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 //import { BOOKS } from '.data.js'
-//import { bookRoutes } from './routes/bookRouter.js'
+//import { placeRoutes } from './routes/placeRouter.js'
 //import errorHandler from './middlewares/errorHandler.js'
 
 dotenv.config()
@@ -12,7 +12,7 @@ const app = express ()
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 
-//app.use('/api', bookRoutes(BOOKS))
+//app.use('/api', placeRoutes(BOOKS))
 //app.use(errorHandler)
 
 app.listen(PORT, ()=>{
