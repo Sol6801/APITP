@@ -1,35 +1,78 @@
-import { v4 as uuid } from 'uuid'
+import { PrismaClient } from '@prisma/client'
 
-//probablemente mejor sea para comentarios el siguiente codigo
 
-export const placeController = (PLACES) => {
-    const getPlaces = (_request, response) => {
-        return response.status(200).json(PLACES)
-    }
-}
+const prisma = new PrismaClient()
 
-const createPlace = (request, response, next) => {
-    const newPlace = request.body 
-    const places = structuredClone(BOOKS) //structured colone porque esa BD es un objeto de js para la prueba
+export const placeController = () => {
+  const getPlaces = async (request, response, next) => {
+    const { query } = request
+
     try {
-        if(!newPlace.title || !newPlace.author){
-            throw new Error('Title and author are required')
+      const places = await prisma.places.findMany({
+        where: {
+          name: {
+            contains: query?.name ?? ''
+          }
         }
-        books.push({
-            id: uuid(),
-            ...newPlace //objeto
-        })
-        return response.status(200).json(places)
-        } catch (error) {
-        next(error)
-        }
+      })
+
+      const responseFormat = {
+        data: places,
+        message: 'Places retrieved successfully'
+      }
+
+      return response.status(200).json(responseFormat)
+    } catch (error) {
+      next(error)
+    } finally {
+      await prisma.$disconnect()
     }
-     const getPlaceById = (request, response) => {
+  }
 
-     }
+  const getAllPlaces = async (_request, response, next) => {
+    try {
+      const places = await prisma.places.findMany()
 
-return {
+      
+      const responseFormat = {
+        data: places,
+        message: 'Places retrieved successfully'
+      }
+
+      return response.status(httpStatus.OK).json(responseFormat)
+    } catch (error) {
+      next(error)
+    } finally {
+      await prisma.$disconnect()
+    }
+  }
+  const getPlaceById = async (request, response, next) => {
+    const { id } = request.params
+    const placeId = Number(id)
+
+    try {
+      const place = await prisma.places.findUnique({
+        where: {
+          id: placeId
+        }
+      })
+
+      const responseFormat = {
+        data: place,
+        message: 'Place retrieved successfully'
+      }
+
+      return response.status(httpStatus.OK).json(responseFormat)
+    } catch (error) {
+      next(error)
+    } finally {
+      await prisma.$disconnect()
+    }
+  }
+
+  return {
     getPlaces,
-    createPlace,
-    getPlaceById
+    getPlaceById,
+    getAllPlaces
+  }
 }

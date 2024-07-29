@@ -1,20 +1,21 @@
-import { response, Router } from 'express'
-import { placeController } from 'express'
+import { Router } from 'express'
+import { placeController } from '../controllers/placeController.js'
+// import { schemaValidator } from '../middlewares/validations.js'
+// import { bodyPlaceSchema, updatePlaceSchema } from '../schemas/placeSchemas.js'
+// import { isAdmin } from '../middlewares/checkRole.js'
 
-export const placeRoutes = (PLACES) => {
-    const placeRouter = Router()
-    const {getPlaces, createPlace, getPlaceById } = placeController(PLACES)
+export const placeRoutes = () => {
+  const placeRouter = Router()
+  const { getPlaces, getPlaceById, getAllPlaces } = placeController()
 
-    placeRouter.route('/places')
-        .get(getPlaces)
-        .post(createPlace)
- 
+  placeRouter.route('/place')
+    .get(getPlaces)
 
-    placeRouter.route('places/books/:id')
-        .get((request, response) => {
-            console.log(request.params)
-            //const { id } = request.params 
-            //const place = PLACES.find.....
-            return response.status(200).json(place)
-    })
+  placeRouter.route('/places')
+    .get(getAllPlaces)
+
+  placeRouter.route('/place/:id')
+    .get(getPlaceById)
+
+  return placeRouter
 }
