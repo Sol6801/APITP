@@ -186,9 +186,6 @@ export const reviewController = () => {
         }
       })
 
-      // const deleteKey = review.imageURL.split('/').pop()
-      // await deleteFile(deleteKey)
-
       const responseFormat = {
         data: review,
         message: 'Review deleted successfully'
@@ -203,7 +200,6 @@ export const reviewController = () => {
   }
 
   const updateById = async (request, response, next) => {
-
 
     const { id } = request.params
     const reviewId = Number(id)

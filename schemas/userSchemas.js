@@ -10,7 +10,7 @@ export const bodyUserSchema = Joi.object({
     name: Joi.string().max(80).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).max(20).required(),
-    role: Joi.string().valid(role.USER, role.ADMIN).insensitive()
+    role: Joi.string().valid(role.USER, role.ADMIN)
   })
 })
 

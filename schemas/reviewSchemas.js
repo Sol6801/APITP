@@ -5,7 +5,7 @@ export const bodyReviewSchema = Joi.object({
     title: Joi.string().max(80).required(),
     content: Joi.string().required(),
     placeId: Joi.string().pattern(/^[0-9]+$/, 'Debe ser un número').required(),
-    userId: Joi.string().pattern(/^[0-9]+$/, 'Debe ser un número').required()
+    UserId: Joi.string().pattern(/^[0-9]+$/, 'Debe ser un número').required()
   })
 })
 

@@ -26,6 +26,3 @@ export const userRoutes = () => {
 
     return userRouter
 }
-
-
-//validar user

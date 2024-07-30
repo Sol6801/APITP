@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { reviewController } from '../controllers/reviewController.js'
 import { schemaValidator } from '../middlewares/validations.js'
-import { bodyReviewSchema, updateReviewSchema } from '../schemas/reviewSchemas.js'
+import { bodyReviewSchema } from '../schemas/reviewSchemas.js'
 
 export const reviewRoutes = () => {
   const reviewRouter = Router()
@@ -9,12 +9,12 @@ export const reviewRoutes = () => {
 
   reviewRouter.route('/reviews')
     .get(getReviews)
-    .post(schemaValidator(bodyReviewSchema), createReview)
+    .post(createReview)
 
   reviewRouter.route('/review/:id')
     .get(getReviewById)
     .delete(deleteById)
-    .patch(schemaValidator(updateReviewSchema), updateById)
+    .patch(updateById)
 
   reviewRouter.route('/review-place')
     .get(getReviewByPlace)
