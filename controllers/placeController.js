@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client'
+import httpStatus from '../helpers/httpStatus.js'
+
 
 
 const prisma = new PrismaClient()
@@ -21,7 +23,7 @@ export const placeController = () => {
         message: 'Places retrieved successfully'
       }
 
-      return response.status(200).json(responseFormat)
+      return response.status(httpStatus.OK).json(responseFormat)
     } catch (error) {
       next(error)
     } finally {
@@ -33,7 +35,7 @@ export const placeController = () => {
     try {
       const places = await prisma.places.findMany()
 
-      
+
       const responseFormat = {
         data: places,
         message: 'Places retrieved successfully'
@@ -70,9 +72,85 @@ export const placeController = () => {
     }
   }
 
+  const createPlace = async (request, response, next) => {
+    const { name, } = request.body
+    try {
+      const place = await prisma.places.create({
+        data: {
+          name
+        }
+      })
+
+
+      return response.status(httpStatus.CREATED).json(place)
+    } catch (error) {
+      next(error)
+    } finally {
+      await prisma.$disconnect()
+    }
+  }
+
+  const updateById = async (request, response, next) => {
+
+    const { id } = request.params
+    const placeId = Number(id)
+    const newPlaceData = request.body
+
+    try {
+      const place = await prisma.places.findUnique({
+        where: {
+          id: placeId
+        },
+        data: {
+          ...newPlaceData
+        }
+      })
+
+
+      const responseFormat = {
+        data: place,
+        message: 'Place updated successfully'
+      }
+
+      return response.status(httpStatus.OK).json(responseFormat)
+    } catch (error) {
+      next(error)
+    } finally {
+      await prisma.$disconnect()
+    }
+
+  }
+
+  const deleteById = async (request, response, next) => {
+    const { id } = request.params
+    const placeId = Number(id)
+
+    try {
+      const place = await prisma.places.delete({
+        where: {
+          id: placeId
+        }
+      })
+
+      const responseFormat = {
+        data: place,
+        message: 'Place deleted successfully'
+      }
+
+      return response.status(httpStatus.OK).json(responseFormat)
+    } catch (error) {
+      next(error)
+    } finally {
+      await prisma.$disconnect()
+    }
+  }
+
   return {
     getPlaces,
     getPlaceById,
-    getAllPlaces
+    getAllPlaces,
+    createPlace,
+    updateById,
+    deleteById
   }
 }

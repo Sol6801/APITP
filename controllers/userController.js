@@ -1,7 +1,8 @@
 import httpStatus from '../helpers/httpStatus.js'
-// import { generateToken, verifyToken } from '../utils/tokenManagement.js'
+import { generateToken, verifyToken } from '../utils/tokenManagement.js'
 import { encrypt, verified } from '../utils/bcrypt.js'
 import { PrismaClient } from '@prisma/client'
+
 
 const prisma = new PrismaClient()
 
@@ -56,9 +57,9 @@ export const userController = () => {
 
       // AQUI TENGO QUE GENERAR EL TOKEN
 
-      const token = generateToken({data:{ email, role: user.role }})
+      const token = generateToken({ data: { email, role: user.role } })
       const refreshToken = generateToken({
-        data:{ email, role: user.role },
+        data: { email, role: user.role },
         isRefresh: true,
         expiresIn: '7d'
       })
@@ -76,23 +77,23 @@ export const userController = () => {
     }
   }
 
-  // const refreshToken = async (request, response, next) => {
-  //   const { refreshToken } = request.body
+  const refreshToken = async (request, response, next) => {
+    const { refreshToken } = request.body
 
-  //   try {
-  //     const { role, email } = verifyToken(refreshToken, true)
-  //     const token = generateToken({
-  //       data:{ email, role, message: 'fressssco' }
-  //     })
+    try {
+      const { role, email } = verifyToken(refreshToken, true)
+      const token = generateToken({
+        data: { email, role }
+      })
 
-  //     return response.status(httpStatus.OK).json({
-  //       success: true,
-  //       token
-  //     })
-  //   } catch (error) {
-  //     next(error)
-  //   }
-  // }
+      return response.status(httpStatus.OK).json({
+        success: true,
+        token
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
 
   const profile = async (request, response, next) => {
     const { id } = request.params
@@ -115,13 +116,68 @@ export const userController = () => {
     }
   }
 
-  
+  const updateUser = async (request, response, next) => {
+
+    const { id } = request.params
+    const userId = Number(id)
+    const newUserData = request.body
+
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userId
+        },
+        data: {
+          ...newUserData
+        }
+      })
+
+
+      const responseFormat = {
+        data: user,
+        message: 'User updated successfully'
+      }
+
+      return response.status(httpStatus.OK).json(responseFormat)
+    } catch (error) {
+      next(error)
+    } finally {
+      await prisma.$disconnect()
+    }
+
+  }
+
+  const deleteUser = async (request, response, next) => {
+    const { id } = request.params
+    const userId = Number(id)
+
+    try {
+      const user = await prisma.user.delete({
+        where: {
+          id: userId
+        }
+      })
+
+      const responseFormat = {
+        data: user,
+        message: 'User deleted successfully'
+      }
+
+      return response.status(httpStatus.OK).json(responseFormat)
+    } catch (error) {
+      next(error)
+    } finally {
+      await prisma.$disconnect()
+    }
+  }
+
 
   return {
     register,
     login,
-    profile
-    // ,
-    // refreshToken
+    profile,
+    updateUser,
+    deleteUser,
+    refreshToken
   }
 }

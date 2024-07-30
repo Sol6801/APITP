@@ -11,14 +11,14 @@ export const isAdmin = (request, response, next) => {
     });
   }
 
-  const [, token] = headers.authorization.split(" ");
+  const token = headers.authorization.split(" ")[1];
 
   const { role } = verifyToken(token);
   const ADMIN_ROLE = 'ADMIN'
   if (role !== ADMIN_ROLE) {
     return response.status(HTTP_STATUS.UNAUTHORIZED).json({
       success: false,
-      message: "Anda pa' llá bobo",
+      message: "Unauthorized.role",
     });
   }
 

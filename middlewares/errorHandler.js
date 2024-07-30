@@ -1,6 +1,6 @@
 const ERROR_HANDLERS = {
 
-  sqlError:() => {},
+  sqlError: () => { },
 
   defaultError: (response, error) => {
     response

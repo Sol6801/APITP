@@ -20,21 +20,21 @@ app.use(cors({
   methods: 'GET, POST, PUT, DELETE',
 }))
 
-// app.post('/api/upload', (req, res) => {
-//   upload(req, res, (err) => {
-//     if (err) {
-//       console.log(err)
-//       return res.status(400).send('Upload failed')
-//     }
-//     res.status(200).json({ message: req.file })
-//   })
-// })
+app.post('/api/upload', (req, res) => {
+  upload(req, res, (err) => {
+    if (err) {
+      console.log(err)
+      return res.status(400).send('Upload failed')
+    }
+    res.status(200).json({ message: req.file })
+  })
+})
 
 app.use(ejwt({
   secret: process.env.SECRET_KEY,
   algorithms: ['HS256'],
 }).unless({
-  path: ['/api/login', '/api/register', '/api/refresh-token'/*, '/api/place'*/],
+  path: ['/api/login', '/api/register', '/api/refresh-token'],
 })
 )
 
@@ -43,6 +43,6 @@ app.use('/api', reviewRoutes(), userRoutes(), reviewFavRoutes())
 app.use(errorHandler)
 
 
-app.listen(PORT, ()=>{
-    console.log (`El servidor esta corriendo en el puerto ${PORT}`)
+app.listen(PORT, () => {
+  console.log(`El servidor esta corriendo en el puerto ${PORT}`)
 })

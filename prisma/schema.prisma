@@ -31,7 +31,7 @@ model Reviews {
   user           User                   @relation(fields: [userId], references: [id])
   userId         Int
   createdAt      DateTime               @default(now()) @map("created_at")
-  updatedAt      DateTime              @updatedAt @map("updated_at")
+  updatedAt      DateTime               @updatedAt @map("updated_at")
   usersFavReview UsersFavoriteReviews[]
 
   @@map("reviews")

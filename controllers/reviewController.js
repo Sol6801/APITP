@@ -14,20 +14,20 @@ export const reviewController = () => {
           title: {
             contains: query?.title ?? ''
           }
+        },
+        include: {
+          place: {
+            select: {
+              name: true
+            }
           },
-            include: {
-              place: {
-                select: {
-                  name: true 
-                }
-              },
-              user: {
-                select: {
-                  name: true
-                }
-              }
-            }    
-    })
+          user: {
+            select: {
+              name: true
+            }
+          }
+        }
+      })
 
       return response.status(httpStatus.OK).json(reviews)
     } catch (error) {
@@ -47,25 +47,25 @@ export const reviewController = () => {
           place: {
             name: {
               contains: placeName,
-              mode: 'insensitive' 
+              mode: 'insensitive'
             }
           }
         },
-            include: {
-              place: {
-                select: {
-                  name: true 
-                }
-              },
-              user: {
-                select: {
-                  name: true
-                }
-              }
+        include: {
+          place: {
+            select: {
+              name: true
             }
-          
-    })
-      
+          },
+          user: {
+            select: {
+              name: true
+            }
+          }
+        }
+
+      })
+
 
       return response.status(httpStatus.OK).json(reviews)
     } catch (error) {
@@ -85,25 +85,25 @@ export const reviewController = () => {
           user: {
             name: {
               contains: userName,
-              mode: 'insensitive' 
+              mode: 'insensitive'
             }
           }
         },
-            include: {
-              place: {
-                select: {
-                  name: true 
-                }
-              },
-              user: {
-                select: {
-                  name: true
-                }
-              }
+        include: {
+          place: {
+            select: {
+              name: true
             }
-          
-    })
-      
+          },
+          user: {
+            select: {
+              name: true
+            }
+          }
+        }
+
+      })
+
 
       return response.status(httpStatus.OK).json(reviews)
     } catch (error) {
@@ -119,8 +119,8 @@ export const reviewController = () => {
     const placeId = Number(body?.placeId ?? null)
     const userId = Number(body?.userId ?? null)
     const { title, content } = body
-    console.log(placeId, userId)
-    try{
+
+    try {
       const review = await prisma.reviews.create({
         data: {
           title,
@@ -136,25 +136,19 @@ export const reviewController = () => {
           },
           user: {
             select: {
-              name: true 
+              name: true
             }
           }
         }
       })
-  
-    
-    
-    // upload(request, response, async (error) => {
-    //   if (error) {
-    //     next(error)
-    //   }
-  
-        return response.status(httpStatus.CREATED).json(review)
-      } catch (error) {
-        next(error)
-      } finally {
-        await prisma.$disconnect()
-      }
+
+
+      return response.status(httpStatus.CREATED).json(review)
+    } catch (error) {
+      next(error)
+    } finally {
+      await prisma.$disconnect()
+    }
   }
 
   const getReviewById = async (request, response, next) => {
@@ -210,52 +204,46 @@ export const reviewController = () => {
 
   const updateById = async (request, response, next) => {
 
-    // upload(request, response, async (error) => {
-    //   if (error) {
-    //     next(error)
-    //   }
 
-      const { id } = request.params
-      const reviewId = Number(id)
-      const newReviewData = request.body
+    const { id } = request.params
+    const reviewId = Number(id)
+    const newReviewData = request.body
 
-      try {
-         const review = await prisma.reviews.update({
-          where: {
-            id: reviewId
+    try {
+      const review = await prisma.reviews.update({
+        where: {
+          id: reviewId
+        },
+        data: {
+          ...newReviewData
+        },
+        include: {
+          place: {
+            select: {
+              name: true
+            }
           },
-          data: {
-            ...newReviewData
-          },
-          include: {
-            place: {
-              select: {
-                name: true
-              }
-            },
-            user: {
-              select: {
-                name: true 
-              }
+          user: {
+            select: {
+              name: true
             }
           }
-        })
-
-        // const deleteKey = reviewToUpdate.imageURL.split('/').pop()
-        // await deleteFile(deleteKey)
-
-        const responseFormat = {
-          data: review,
-          message: 'Review updated successfully'
         }
+      })
 
-        return response.status(httpStatus.OK).json(responseFormat)
-      } catch (error) {
-        next(error)
-      } finally {
-        await prisma.$disconnect()
+
+      const responseFormat = {
+        data: review,
+        message: 'Review updated successfully'
       }
-    // })
+
+      return response.status(httpStatus.OK).json(responseFormat)
+    } catch (error) {
+      next(error)
+    } finally {
+      await prisma.$disconnect()
+    }
+
   }
 
 

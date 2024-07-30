@@ -60,6 +60,8 @@ export const reviewFavController = () => {
     }
   }
 
+
+
   const getAllUsersWhoFavedAReview = async (request, response, next) => {
     const { query } = request
     const reviewId = Number(query?.id)
@@ -94,6 +96,7 @@ export const reviewFavController = () => {
       await prisma.$disconnect()
     }
   }
+
 
 
   return {

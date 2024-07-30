@@ -1,5 +1,5 @@
 
-export const schemaValidator = (schema) => async (request, response, next) => {
+export const schemaValidator = (schema) => async (request, _response, next) => {
   const { error } = schema.validate({
     body: request.body,
     params: request.params,
@@ -8,6 +8,6 @@ export const schemaValidator = (schema) => async (request, response, next) => {
     abortEarly: false,
     allowUnknown: true
   })
-  
+
   error ? next(error) : next()
 }
